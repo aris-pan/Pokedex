@@ -1,0 +1,14 @@
+// MARK: List
+"app_title_key" = "Pokèdex";
+"favourites_key" = "Favourites";
+
+// MARK: Details
+"height_key" = "Height: ";
+"weight_key" = "Weight: ";
+"moves_key" = "Moves";
+"types_key" = "Types";
+"favorite_key" = "Favorite";
+"search_key" = "Pokemon Name";
+
+// MARK: Other
+"error_key" = "Ohh no...";

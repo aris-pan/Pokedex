@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C7A21122-9759-4FA3-AB35-1F5D32B489D3",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Pokedex.xcodeproj",
+        "identifier" : "0B60A5C229FBD7E80042D1AB",
+        "name" : "DomainLogicTests"
+      }
+    }
+  ],
+  "version" : 1
+}
