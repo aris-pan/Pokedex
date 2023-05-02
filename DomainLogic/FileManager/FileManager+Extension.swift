@@ -8,7 +8,6 @@ public extension FileManager {
   }
   
   static func decode<T: Codable>(_ type: T.Type, from docName: String) throws -> T {
-    // TODO: fileExists should be mocked
     if !FileManager().fileExists(atPath: Self.docDirURL.appendingPathComponent(docName).path) {
       throw FileManagerError.fileNotExisting
     }
@@ -37,7 +36,6 @@ public extension FileManager {
     let url = Self.docDirURL.appendingPathComponent(docName)
     do {
       
-      // TODO: write should be mocked
       try contents.write(to: url, atomically: true, encoding: .utf8)
     } catch {
       print("Error: \(error.localizedDescription)")
