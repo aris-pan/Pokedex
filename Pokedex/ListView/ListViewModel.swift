@@ -12,12 +12,11 @@ final class ListViewModel: ObservableObject {
   
   @Published var searchText = "" {
     didSet {
-      pokemonList = (showFavourites ? favouritesList : allPokemonList).filter { $0.name.hasPrefix(searchText.lowercased()) }
+      pokemonList = pokemonList.filter { $0.name.hasPrefix(searchText.lowercased()) }
     }
   }
   
   // Dependencies
-  private var pokemonFileManager: PokemonFileManager?
   private var pokemonAPI: API.Pokemon?
   
   private var favouritesList: [Pokemon] = []
@@ -32,7 +31,6 @@ final class ListViewModel: ObservableObject {
     pokemonFileManager: PokemonFileManager,
     pokemonAPI: API.Pokemon
   ) {
-    self.pokemonFileManager = pokemonFileManager
     self.pokemonAPI = pokemonAPI
     
     let pokemonSet = pokemonFileManager.load()
