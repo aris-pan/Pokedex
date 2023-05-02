@@ -98,7 +98,7 @@ struct PokemonDetailsView_Previews: PreviewProvider {
     NavigationStack {
       DetailsView(pokemon: pokemon)
         .environment(\.pokemonAPI, .preview(objects: pokemonDetails))
-        .environment(\.fileManager, PokemonFileManagerEnvironmentKey.previewValue)
+        .environment(\.fileManager, .preview)
     }
   }
 }
