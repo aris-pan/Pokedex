@@ -20,12 +20,7 @@ final class ListViewModel: ObservableObject {
   private var pokemonAPI: API.Pokemon?
   
   private var favouritesList: [Pokemon] = []
-  
-  private var allPokemonList: [Pokemon] = [] {
-    didSet {
-      pokemonList = allPokemonList
-    }
-  }
+  private var allPokemonList: [Pokemon] = []
   
   func onAppear(
     pokemonFileManager: PokemonFileManager,
@@ -44,6 +39,8 @@ final class ListViewModel: ObservableObject {
       Task {
         do {
           allPokemonList = try await pokemonAPI.getList()
+          // Initialize list with all pokemon from api.
+          pokemonList = allPokemonList
         } catch {
           print("\(error)")
         }
