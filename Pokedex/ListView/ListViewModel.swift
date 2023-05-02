@@ -36,6 +36,10 @@ final class ListViewModel: ObservableObject {
     let pokemonSet = pokemonFileManager.load()
     favouritesList = Array(pokemonSet)
     
+    // TODO: Remove below copy paste
+    pokemonList = (showFavourites ? favouritesList : allPokemonList)
+    
+    // Run Get List only on first Appearance
     if allPokemonList.isEmpty {
       Task {
         do {
