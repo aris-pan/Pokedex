@@ -44,7 +44,10 @@ struct PokemonListView_Previews: PreviewProvider {
   ])
   static var previews: some View {
     ListView()
+    // TODO: we need to somehow pass both api calls here,
+    // not only the get List.
       .environment(\.pokemonAPI, .preview(objects: previewObjects))
-      .environment(\.fileManager, PokemonFileManagerPreview())
+    // TODO: we need to improve discorevability of previewValue
+      .environment(\.fileManager, PokemonFileManagerEnvironmentKey.previewValue)
   }
 }

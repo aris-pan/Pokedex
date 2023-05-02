@@ -25,8 +25,6 @@ public class PokemonFileManagerLive: PokemonFileManager, ObservableObject {
 public class PokemonFileManagerPreview: PokemonFileManager, ObservableObject {
   private var objects: Set<Pokemon> = []
   
-  public init() {}
-  
   public func save(objects: Set<Pokemon>) {
     self.objects = objects
     print("Preview: Fake Save to Documents Directory")
