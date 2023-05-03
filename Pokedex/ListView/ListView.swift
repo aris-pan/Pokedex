@@ -39,17 +39,17 @@ struct ListView: View {
 struct PokemonListView_Previews: PreviewProvider {
   static var previewObjects = API.Pokemon.PagedResponse(results: [
     Pokemon(
-      id: Pokemon.Id(rawValue: 11),
+      id: 11,
       name: "Hello",
       image: ""
     ),
     Pokemon(
-      id: Pokemon.Id(rawValue: 42),
+      id: 42,
       name: "Hello2",
       image: ""
     ),
     Pokemon(
-      id: Pokemon.Id(rawValue: 43),
+      id: 43,
       name: "Hello1",
       image: ""
     )

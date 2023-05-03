@@ -5,7 +5,7 @@ final class PokemonGetDetailsTests: XCTestCase {
   func testGetDetailsReturnsFailureWhenAPIFails() async throws {
     let apiFailure: API.URLSessionDataAdapter = { _ in throw Errors.someFailure }
     let getList = API.Pokemon(urlSessionDataAdapter: apiFailure)
-    await XCTAssertThrowsError(try await getList.getDetails(id: Pokemon.Id(rawValue: 6)))
+    await XCTAssertThrowsError(try await getList.getDetails(id: 6))
   }
   
   func testGetDetailsReturnsValuesOnAPISuccess() async throws {
@@ -15,7 +15,7 @@ final class PokemonGetDetailsTests: XCTestCase {
 
     let pokemonAPI = API.Pokemon.test(data: responseData, response: httpResponse)
 
-    let receivedPokemonDetails = try await pokemonAPI.getDetails(id: Pokemon.Id(rawValue: 6))
+    let receivedPokemonDetails = try await pokemonAPI.getDetails(id: 6)
     XCTAssertEqual(receivedPokemonDetails, SampleAssertionData.pokemonDetails)
   }
 }

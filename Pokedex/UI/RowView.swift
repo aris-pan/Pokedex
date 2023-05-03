@@ -22,7 +22,7 @@ struct RowView: View {
 
 struct ItemView_Previews: PreviewProvider {
   static let pokemon = Pokemon(
-    id: Pokemon.Id(rawValue: 3),
+    id: 3,
     name: "charmander",
     image: "")
   

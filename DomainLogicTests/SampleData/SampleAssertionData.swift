@@ -19,22 +19,22 @@ struct SampleAssertionData {
   
   static let pokemonList: [Pokemon] = [
     .init(
-      id: Pokemon.Id(rawValue: 1),
+      id: 1,
       name: "bulbasaur",
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
     ),
     .init(
-      id: Pokemon.Id(rawValue: 2),
+      id: 2,
       name: "ivysaur",
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png"
     ),
     .init(
-      id: Pokemon.Id(rawValue: 3),
+      id: 3,
       name: "venusaur",
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png"
     ),
     .init(
-      id: Pokemon.Id(rawValue: 4),
+      id: 4,
       name: "charmander",
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
     )

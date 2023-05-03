@@ -84,7 +84,7 @@ struct DetailsView: View {
 
 struct PokemonDetailsView_Previews: PreviewProvider {
   static let pokemon = Pokemon(
-    id: Pokemon.Id(rawValue: 1),
+    id: .init(rawValue: 1),
     name: "bulbasaur",
     image: "")
   static let pokemonDetails = PokemonDetails(
