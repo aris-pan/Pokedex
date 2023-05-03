@@ -6,7 +6,7 @@ final class ListViewModel: ObservableObject {
   @Published var pokemonList: [Pokemon] = []
   @Published var showFavourites = false {
     didSet {
-      pokemonList = (showFavourites ? favouritesList : allPokemonList)
+      didSetFavourite()
     }
   }
   
@@ -22,6 +22,11 @@ final class ListViewModel: ObservableObject {
   private var favouritesList: [Pokemon] = []
   private var allPokemonList: [Pokemon] = []
   
+  private func didSetFavourite() {
+    pokemonList = (showFavourites ? favouritesList : allPokemonList)
+
+  }
+  
   func onAppear(
     pokemonFileManager: PokemonFileManager,
     pokemonAPI: API.Pokemon
@@ -31,8 +36,7 @@ final class ListViewModel: ObservableObject {
     let pokemonSet = pokemonFileManager.load()
     favouritesList = Array(pokemonSet)
     
-    // TODO: Remove below copy paste
-    pokemonList = (showFavourites ? favouritesList : allPokemonList)
+    didSetFavourite()
     
     // Run Get List only on first Appearance
     if allPokemonList.isEmpty {
