@@ -9,7 +9,7 @@ struct RowView: View {
       CacheAsyncImageWrapper(url: pokemon.image)
         .frame(width: 60, height: 60)
       VStack(alignment: .leading) {
-        Text("#\(pokemon.id)")
+        Text("#\(pokemon.id.rawValue)")
           .fontWeight(.light)
           .italic()
         Text(pokemon.name.capitalized)
@@ -21,7 +21,10 @@ struct RowView: View {
 }
 
 struct ItemView_Previews: PreviewProvider {
-  static let pokemon = Pokemon(id: 3, name: "charmander", image: "")
+  static let pokemon = Pokemon(
+    id: Pokemon.Id(rawValue: 3),
+    name: "charmander",
+    image: "")
   
   static var previews: some View {
     RowView(pokemon: pokemon)

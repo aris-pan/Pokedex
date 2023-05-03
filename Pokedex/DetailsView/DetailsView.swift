@@ -55,7 +55,7 @@ struct DetailsView: View {
       ToolbarItem(placement: .principal) {
         HStack {
           Text(pokemon.name.capitalized).font(.headline)
-          Text("#\(pokemon.id)").fontWeight(.light).italic()
+          Text("#\(pokemon.id.rawValue)").fontWeight(.light).italic()
         }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
@@ -83,7 +83,10 @@ struct DetailsView: View {
 }
 
 struct PokemonDetailsView_Previews: PreviewProvider {
-  static let pokemon = Pokemon(id: 1, name: "bulbasaur", image: "")
+  static let pokemon = Pokemon(
+    id: Pokemon.Id(rawValue: 1),
+    name: "bulbasaur",
+    image: "")
   static let pokemonDetails = PokemonDetails(
     height: 54, weight: 455,
     moves: [

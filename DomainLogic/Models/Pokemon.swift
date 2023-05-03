@@ -1,7 +1,15 @@
 import Foundation
 
 public struct Pokemon: Codable, Hashable, Identifiable {
-  public var id: Int
+  
+  public struct Id: Codable, Hashable, RawRepresentable {
+    public var rawValue: Int
+    public init(rawValue: Int) {
+      self.rawValue = rawValue
+    }
+  }
+  
+  public var id: Id
   public let name: String
   public let image: URL?
   
@@ -10,7 +18,7 @@ public struct Pokemon: Codable, Hashable, Identifiable {
     case url
   }
   
-  public init(id: Int, name: String, image: String) {
+  public init(id: Id, name: String, image: String) {
     self.id = id
     self.name = name
     self.image = URL(string: image)
@@ -22,11 +30,11 @@ public struct Pokemon: Codable, Hashable, Identifiable {
     let url = try container.decodeIfPresent(String.self, forKey: .url)
     
     guard let pokemonID = url?.components(separatedBy: "/")[safe: 6],
-      let id = Int(pokemonID) else {
+          let intID = Int(pokemonID) else {
       throw API.Errors.unexpectedResponse
     }
     
-    self.id = id
+    self.id = Id(rawValue: intID)
     self.image = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(pokemonID).png")
   }
   
