@@ -2,12 +2,7 @@ import Foundation
 
 public struct Pokemon: Codable, Hashable, Identifiable {
   
-  public struct Id: Codable, Hashable, RawRepresentable {
-    public var rawValue: Int
-    public init(rawValue: Int) {
-      self.rawValue = rawValue
-    }
-  }
+  public typealias Id = Tagged<Pokemon, Int>
   
   public var id: Id
   public let name: String
