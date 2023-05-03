@@ -24,7 +24,6 @@ final class ListViewModel: ObservableObject {
   
   private func didSetFavourite() {
     pokemonList = (showFavourites ? favouritesList : allPokemonList)
-
   }
   
   func onAppear(

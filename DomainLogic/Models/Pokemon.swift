@@ -36,6 +36,6 @@ public struct Pokemon: Codable, Hashable, Identifiable {
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(name, forKey: .name)
-    try container.encode("https://pokeapi.co/api/v2/pokemon/\(id)", forKey: .url)
+    try container.encode("https://pokeapi.co/api/v2/pokemon/\(id.rawValue)", forKey: .url)
   }
 }
