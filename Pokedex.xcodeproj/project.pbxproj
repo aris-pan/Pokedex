@@ -109,7 +109,6 @@
 		0B60A5EE29FC0C280042D1AB /* API.Pokemon+GetDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API.Pokemon+GetDetails.swift"; sourceTree = "<group>"; };
 		0B60A5F229FC12880042D1AB /* sampleResponsePokemonDetails.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sampleResponsePokemonDetails.json; sourceTree = "<group>"; };
 		0B60A5F429FC179B0042D1AB /* PokemonGetDetailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonGetDetailsTests.swift; sourceTree = "<group>"; };
-		0B60A5F629FC59000042D1AB /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
 		0B60A5FA29FD1D800042D1AB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0B60A5FB29FD22230042D1AB /* FormatText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatText.swift; sourceTree = "<group>"; };
 		0B60A5FD29FD5DB30042D1AB /* TypeToColorDict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeToColorDict.swift; sourceTree = "<group>"; };
@@ -292,7 +291,6 @@
 			isa = PBXGroup;
 			children = (
 				0B60A5FA29FD1D800042D1AB /* README.md */,
-				0B60A5F629FC59000042D1AB /* TestPlan.xctestplan */,
 				0BA4631729F94EEE009E5992 /* Pokedex */,
 				0B60A5BB29FBD7E70042D1AB /* DomainLogic */,
 				0B60A5C929FBD7E80042D1AB /* DomainLogicTests */,
