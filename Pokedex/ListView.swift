@@ -26,13 +26,21 @@ final class ListViewModel: ObservableObject {
   }
 
   func onAppear(
-    pokemonFileManager: PokemonFileManager,
     pokemonAPI: API.Pokemon
   ) {
     self.pokemonAPI = pokemonAPI
 
-    let pokemonSet = pokemonFileManager.load()
-    favouritesList = Array(pokemonSet)
+    var favouritePokemonsSet: Set<Pokemon> = Set<Pokemon>()
+    do {
+      favouritePokemonsSet = try JSONDecoder().decode(
+        Set<Pokemon>.self,
+        from: Current.dataManager.load(URL.pokemons)
+      )
+    } catch {
+
+    }
+
+    favouritesList = Array(favouritePokemonsSet)
 
     didSetFavourite()
 
@@ -51,13 +59,15 @@ final class ListViewModel: ObservableObject {
   }
 }
 
+extension URL {
+  fileprivate static let pokemons = Self.documentsDirectory.appending(component: "pokemons.json")
+}
 
 struct ListView: View {
   @Environment(\.pokemonAPI) var pokemonAPI: API.Pokemon
-  @Environment(\.fileManager) var fileManager: PokemonFileManager
 
   @StateObject var viewModel = ListViewModel()
-    
+
   var body: some View {
     NavigationStack {
       List($viewModel.pokemonList) { $pokemon in
@@ -79,7 +89,6 @@ struct ListView: View {
       }
       .onAppear {
         viewModel.onAppear(
-          pokemonFileManager: fileManager,
           pokemonAPI: pokemonAPI
         )
       }
@@ -111,6 +120,5 @@ struct PokemonListView_Previews: PreviewProvider {
     // TODO: we need to somehow pass both api calls here,
     // not only the get List.
       .environment(\.pokemonAPI, .preview(objects: previewObjects))
-      .environment(\.fileManager, .preview)
   }
 }

@@ -6,12 +6,10 @@ final class DetailsViewModel: ObservableObject {
   @Published var pokemonDetails: PokemonDetails? = nil
 
   // Dependencies
-  private var pokemonFileManager: PokemonFileManager?
   private var pokemonAPI: API.Pokemon?
   private var pokemon: Pokemon? = nil
 
-  func onAppear(pokemonFileManager: PokemonFileManager, pokemonAPI: API.Pokemon, pokemon: Pokemon) {
-    self.pokemonFileManager = pokemonFileManager
+  func onAppear(pokemonAPI: API.Pokemon, pokemon: Pokemon) {
     self.pokemonAPI = pokemonAPI
     self.pokemon = pokemon
 
@@ -27,9 +25,17 @@ final class DetailsViewModel: ObservableObject {
   }
 
   func onAddOrRemoveFavourite() {
-    guard var favouritePokemons = pokemonFileManager?.load(),
-          let pokemon = pokemon else {
-      print("Could not get pokemons")
+    var favouritePokemons: Set<Pokemon> = Set<Pokemon>()
+    do {
+      favouritePokemons = try JSONDecoder().decode(
+        Set<Pokemon>.self,
+        from: Current.dataManager.load(URL.pokemons)
+      )
+    } catch {
+
+    }
+
+    guard let pokemon = pokemon else {
       return
     }
 
@@ -38,22 +44,43 @@ final class DetailsViewModel: ObservableObject {
     } else {
       favouritePokemons.insert(pokemon)
     }
-    pokemonFileManager?.save(objects: favouritePokemons)
+
+    do {
+      try Current.dataManager.save(
+        JSONEncoder().encode(favouritePokemons),
+        URL.pokemons
+      )
+    } catch { }
 
     checkIsFavourite()
   }
 
   private func checkIsFavourite() {
-    isFavourite = pokemonFileManager?.load()
-      .contains(where: { $0.id == self.pokemon!.id }) ?? false
+    var favouritePokemonsSet: Set<Pokemon> = Set<Pokemon>()
+    do {
+      favouritePokemonsSet = try JSONDecoder().decode(
+        Set<Pokemon>.self,
+        from: Current.dataManager.load(URL.pokemons)
+      )
+    } catch {
+
+    }
+
+    guard let pokemon = pokemon else {
+      return
+    }
+
+    isFavourite = favouritePokemonsSet
+      .contains(where: { $0.id == pokemon.id })
   }
 }
 
-
+extension URL {
+  fileprivate static let pokemons = Self.documentsDirectory.appending(component: "pokemons.json")
+}
 
 struct DetailsView: View {
   @Environment(\.pokemonAPI) var pokemonAPI: API.Pokemon
-  @Environment(\.fileManager) var fileManager: PokemonFileManager
   let pokemon: Pokemon
   
   @StateObject var viewModel = DetailsViewModel()
@@ -116,7 +143,6 @@ struct DetailsView: View {
     }
     .onAppear {
       viewModel.onAppear(
-        pokemonFileManager: fileManager,
         pokemonAPI: pokemonAPI,
         pokemon: pokemon
       )
@@ -151,7 +177,6 @@ struct PokemonDetailsView_Previews: PreviewProvider {
     NavigationStack {
       DetailsView(pokemon: pokemon)
         .environment(\.pokemonAPI, .preview(objects: pokemonDetails))
-        .environment(\.fileManager, .preview)
     }
   }
 }
