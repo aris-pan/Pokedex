@@ -6,12 +6,12 @@ No external libraries are used.
 
 ## Features
 
-- See List of Pokemons
-- See Pokemon Details
-- Make Pokemon Favourite
-- See only Favourite Pokemons
+- Pokemon List
+- Pokemon Details
+- Favourite a Pokemon
+- Filter Favourite Pokemons
 - Search Pokemons by Name
-- Add Localization
+- Localization
 
 ## Technologies used
 
@@ -23,6 +23,6 @@ No external libraries are used.
 ## Techniques used
 
 - Image Caching
-- Manage Dependencies with Custom EnvironmentKeys
-- Unit Testing
+- Manage Dependencies by pushing them to the boundaries of the App
 - View Models
+- Use Typed IDs using _Tagged_ to avoid logical errors.  
