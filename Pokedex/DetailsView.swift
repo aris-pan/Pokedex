@@ -2,10 +2,12 @@ import SwiftUI
 
 @MainActor
 final class DetailsViewModel: ObservableObject {
-  @Published var isFavourite = false
-  @Published var pokemonDetails: PokemonDetails? = nil
+  @Published
+  var isFavourite = false
 
-  // Dependencies
+  @Published
+  var pokemonDetails: PokemonDetails? = nil
+
   private var pokemonAPI: API.Pokemon?
   private var pokemon: Pokemon? = nil
 
@@ -43,6 +45,8 @@ final class DetailsViewModel: ObservableObject {
         JSONEncoder().encode(favouritePokemonsSet),
         URL.pokemons
       )
+
+      isFavourite.toggle()
     } catch { }
   }
 

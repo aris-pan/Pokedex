@@ -2,20 +2,23 @@ import SwiftUI
 
 @MainActor
 final class ListViewModel: ObservableObject {
-  @Published var pokemonList: [Pokemon] = []
-  @Published var showFavourites = false {
+  @Published
+  var pokemonList: [Pokemon] = []
+
+  @Published
+  var showFavourites = false {
     didSet {
       didSetFavourite()
     }
   }
 
-  @Published var searchText = "" {
+  @Published
+  var searchText = "" {
     didSet {
       pokemonList = pokemonList.filter { $0.name.hasPrefix(searchText.lowercased()) }
     }
   }
 
-  // Dependencies
   private var pokemonAPI: API.Pokemon?
 
   private var favouritesList: [Pokemon] = []
