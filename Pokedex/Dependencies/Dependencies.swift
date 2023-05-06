@@ -8,9 +8,4 @@ struct Dependencies {
     dataManager: .liveValue,
     apiClient: .liveValue
   )
-
-  static var previewValues = Dependencies(
-    dataManager: .mock(),
-    apiClient: .mock()
-  )
 }

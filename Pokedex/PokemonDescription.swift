@@ -178,10 +178,7 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   
   static var previews: some View {
     NavigationStack {
-      PokemonDescriptionView(model: PokemonDetailsViewModel(
-        dependencies: .previewValues,
-        pokemon: pokemon
-      ))
+      PokemonDescriptionView(model: PokemonDetailsViewModel(pokemon: pokemon))
     }
   }
 }

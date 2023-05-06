@@ -16,6 +16,9 @@ final class PokemonListViewModel: ObservableObject {
     }
   }
 
+  @Published var showAlert: Bool = false
+  @Published var errorText = ""
+
   private var favouritesList: [PokemonListModel.Pokemon] = []
   private var allPokemonList: [PokemonListModel.Pokemon] = []
 
@@ -38,7 +41,8 @@ final class PokemonListViewModel: ObservableObject {
         from: dependencies.dataManager.load(URL.pokemonFileSystem)
       )
     } catch {
-      print("\(error)")
+      showAlert = true
+      errorText = error.localizedDescription
     }
 
     favouritesList = Array(favouritePokemonsSet)
@@ -62,7 +66,8 @@ final class PokemonListViewModel: ObservableObject {
             .results
           pokemonList = allPokemonList
         } catch {
-          print("\(error)")
+          showAlert = true
+          errorText = error.localizedDescription
         }
       }
     }
@@ -80,6 +85,7 @@ extension URL {
 
 struct ListView: View {
   @ObservedObject var model: PokemonListViewModel
+
 
   var body: some View {
     NavigationStack {
@@ -103,6 +109,9 @@ struct ListView: View {
           Toggle("favourites_key", isOn: $model.showFavourites)
         }
       }
+      .alert(isPresented: $model.showAlert) {
+        .init(title: Text(model.errorText))
+      }
       .onAppear {
         model.onAppear()
       }
@@ -113,7 +122,17 @@ struct ListView: View {
 struct PokemonListView_Previews: PreviewProvider {
   static var previews: some View {
     ListView(model: PokemonListViewModel(
-      dependencies: Dependencies.previewValues)
-    )
+      dependencies: Dependencies(
+        dataManager: .mock(initialData: try? JSONEncoder().encode(PokemonListModel.mock.results)),
+        apiClient: .mock(initialData: try? JSONEncoder().encode(PokemonListModel.mock))
+      )))
+    .previewDisplayName("Happy Path")
+
+    ListView(model: PokemonListViewModel(
+      dependencies: Dependencies(
+        dataManager: .failToLoad,
+        apiClient: .mock(initialData: try? JSONEncoder().encode(PokemonListModel.mock))
+      )))
+    .previewDisplayName("Error: Fail to load from FileSystem")
   }
 }

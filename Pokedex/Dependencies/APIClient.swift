@@ -11,18 +11,14 @@ extension APIClient {
 }
 
 extension APIClient {
-  private static var data: Data?
-
-  static func mock(initialData: Data? = nil) -> APIClient {
-    self.data = initialData
+  static func mock(initialData: Data?) -> APIClient {
     return APIClient(
       load: { _ in
-        guard let data = self.data
-        else {
-          struct ResourceNotFound: Error {}
-          throw ResourceNotFound()
+        guard let initialData else {
+          struct DataNotFound: Error {}
+          throw DataNotFound()
         }
-        return (data, URLResponse())
+        return (initialData, HTTPURLResponse(url: URL.init(string: "https://google.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
       }
     )
   }
