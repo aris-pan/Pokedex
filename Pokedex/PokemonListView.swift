@@ -1,7 +1,7 @@
 import SwiftUI
 
 @MainActor
-final class ListViewModel: ObservableObject {
+final class PokemonListModel: ObservableObject {
   @Published var pokemonList: [Pokemon] = []
 
   @Published var showFavourites = false {
@@ -19,6 +19,12 @@ final class ListViewModel: ObservableObject {
   private var favouritesList: [Pokemon] = []
   private var allPokemonList: [Pokemon] = []
 
+  let dependencies: Dependencies
+
+  init(dependencies: Dependencies = .liveValues) {
+    self.dependencies = dependencies
+  }
+
   private func didSetFavourite() {
     pokemonList = (showFavourites ? favouritesList : allPokemonList)
   }
@@ -29,7 +35,7 @@ final class ListViewModel: ObservableObject {
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
         Set<Pokemon>.self,
-        from: Current.dataManager.load(URL.pokemonFileSystem)
+        from: dependencies.dataManager.load(URL.pokemonFileSystem)
       )
     } catch {
       print("\(error)")
@@ -42,7 +48,7 @@ final class ListViewModel: ObservableObject {
     if allPokemonList.isEmpty {
       Task {
         do {
-          let (data, urlResponse) = try await Current.apiClient.load(
+          let (data, urlResponse) = try await dependencies.apiClient.load(
             URLRequest(url: URL.pokemonNetwork)
           )
 
@@ -73,13 +79,16 @@ extension URL {
 }
 
 struct ListView: View {
-  @StateObject var viewModel = ListViewModel()
+  @ObservedObject var model: PokemonListModel
 
   var body: some View {
     NavigationStack {
-      List($viewModel.pokemonList) { $pokemon in
+      List($model.pokemonList) { $pokemon in
         NavigationLink {
-          DetailsView(pokemon: pokemon)
+          DetailsView(model: PokemonDetailsModel(
+            dependencies: model.dependencies,
+            pokemon: pokemon
+          ))
         } label: {
           RowView(pokemon: $pokemon.wrappedValue)
         }
@@ -87,20 +96,22 @@ struct ListView: View {
       .navigationTitle("app_title_key")
       .navigationBarTitleDisplayMode(.inline)
       .listStyle(.insetGrouped)
-      .searchable(text: $viewModel.searchText, prompt: Text("search_key"))
-      .animation(Animation.easeInOut, value: viewModel.pokemonList)
+      .searchable(text: $model.searchText, prompt: Text("search_key"))
+      .animation(Animation.easeInOut, value: model.pokemonList)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
-          Toggle("favourites_key", isOn: $viewModel.showFavourites)
+          Toggle("favourites_key", isOn: $model.showFavourites)
         }
       }
     }
-    .onAppear(perform: viewModel.onAppear)
+    .onAppear(perform: model.onAppear)
   }
 }
 
 struct PokemonListView_Previews: PreviewProvider {
   static var previews: some View {
-    ListView()
+    ListView(model: PokemonListModel(
+      dependencies: Dependencies.previewValues)
+    )
   }
 }

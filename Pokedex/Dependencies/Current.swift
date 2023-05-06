@@ -1,6 +1,16 @@
 import Foundation
 
-struct Current {
-  static var dataManager: DataManager = .liveValue
-  static var apiClient: APIClient = .liveValue
+struct Dependencies {
+  var dataManager: DataManager
+  var apiClient: APIClient
+
+  static var liveValues = Dependencies(
+    dataManager: .liveValue,
+    apiClient: .liveValue
+  )
+
+  static var previewValues = Dependencies(
+    dataManager: .mock(),
+    apiClient: .mock()
+  )
 }

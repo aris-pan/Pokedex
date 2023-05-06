@@ -3,7 +3,7 @@ import XCTest
 
 final class PokemonGetListTests: XCTestCase {
   func testGetListReturnsFailureWhenAPIFails() async throws {
-    Current.apiClient.load = { _ in throw Errors.someFailure }
+//    Current.apiClient.load = { _ in throw Errors.someFailure }
 
 //    let apiFailure: API.URLSessionDataAdapter = { _ in throw Errors.someFailure }
 

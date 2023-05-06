@@ -1,22 +1,28 @@
 import SwiftUI
 
 @MainActor
-final class DetailsViewModel: ObservableObject {
+final class PokemonDetailsModel: ObservableObject {
   @Published var isFavourite = false
 
   @Published var pokemonDetails: PokemonDetails? = nil
 
-  private var pokemon: Pokemon? = nil
+  let pokemon: Pokemon
 
-  func onAppear(pokemon: Pokemon) {
+  let dependencies: Dependencies
+
+  init(dependencies: Dependencies = .liveValues, pokemon: Pokemon) {
+    self.dependencies = dependencies
     self.pokemon = pokemon
+  }
+
+  func onAppear() {
 
     isFavourite = getFavourites()
       .contains(where: { $0.id == pokemon.id })
 
     Task {
       do {
-        let (data, urlResponse) = try await Current.apiClient.load(
+        let (data, urlResponse) = try await dependencies.apiClient.load(
           URLRequest(url: URL.pokemonNetwork.appending(path: "/\(pokemon.id.rawValue)"))
         )
 
@@ -35,10 +41,6 @@ final class DetailsViewModel: ObservableObject {
   func onAddOrRemoveFavourite() {
     var favouritePokemonsSet = getFavourites()
 
-    guard let pokemon = pokemon else {
-      return
-    }
-
     if isFavourite {
       favouritePokemonsSet.remove(pokemon)
     } else {
@@ -46,7 +48,7 @@ final class DetailsViewModel: ObservableObject {
     }
 
     do {
-      try Current.dataManager.save(
+      try dependencies.dataManager.save(
         JSONEncoder().encode(favouritePokemonsSet),
         URL.pokemons
       )
@@ -60,7 +62,7 @@ final class DetailsViewModel: ObservableObject {
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
         Set<Pokemon>.self,
-        from: Current.dataManager.load(URL.pokemons)
+        from: dependencies.dataManager.load(URL.pokemons)
       )
     } catch {
 
@@ -79,19 +81,17 @@ extension URL {
 }
 
 struct DetailsView: View {
-  let pokemon: Pokemon
-  
-  @StateObject var viewModel = DetailsViewModel()
+  @ObservedObject var model: PokemonDetailsModel
 
   var body: some View {
     VStack {
       HStack {
-        CacheAsyncImageWrapper(url: pokemon.image)
+        CacheAsyncImageWrapper(url: model.pokemon.image)
           .frame(maxWidth: .infinity, maxHeight: 100)
           .padding()
         
         VStack(alignment: .leading) {
-          if let pokemonDetails = viewModel.pokemonDetails {
+          if let pokemonDetails = model.pokemonDetails {
             Text("height_key") + Text("\(pokemonDetails.height)")
             Text("weight_key") + Text("\(pokemonDetails.weight)")
           } else {
@@ -106,14 +106,14 @@ struct DetailsView: View {
       .background(
         RoundedRectangle(cornerRadius: 10)
           .fill(TypeDictionaries.colorFor(
-            viewModel.pokemonDetails?.types.first ?? ""
+            model.pokemonDetails?.types.first ?? ""
           ))
           .frame(maxHeight: .infinity)
       )
       .padding()
       .shadow(radius: 10)
       HStack {
-        if let pokemonDetails = viewModel.pokemonDetails {
+        if let pokemonDetails = model.pokemonDetails {
           CaptuleListView(title: "moves_key", items: pokemonDetails.moves) { move in
             Text(FormatString.removeDash(move))
           }
@@ -129,8 +129,8 @@ struct DetailsView: View {
     .toolbar {
       ToolbarItem(placement: .principal) {
         HStack {
-          Text(pokemon.name.capitalized).font(.headline)
-          Text("#\(pokemon.id.rawValue)").fontWeight(.light).italic()
+          Text(model.pokemon.name.capitalized).font(.headline)
+          Text("#\(model.pokemon.id.rawValue)").fontWeight(.light).italic()
         }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
@@ -140,17 +140,15 @@ struct DetailsView: View {
       }
     }
     .onAppear {
-      viewModel.onAppear(
-        pokemon: pokemon
-      )
+      model.onAppear()
     }
   }
   
   private var favouriteButton: some View {
     Button {
-      viewModel.onAddOrRemoveFavourite()
+      model.onAddOrRemoveFavourite()
     } label: {
-      Label("favorite", systemImage: viewModel.isFavourite ? "star.fill" : "star")
+      Label("favorite", systemImage: model.isFavourite ? "star.fill" : "star")
     }
   }
 }
@@ -172,7 +170,10 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   
   static var previews: some View {
     NavigationStack {
-      DetailsView(pokemon: pokemon)
+      DetailsView(model: PokemonDetailsModel(
+        dependencies: .previewValues,
+        pokemon: pokemon
+      ))
     }
   }
 }
