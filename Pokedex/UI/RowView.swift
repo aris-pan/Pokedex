@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RowView: View {
-  let pokemon: Pokemon
+  let pokemon: PokemonListModel.Pokemon
   
   var body: some View {
     HStack(alignment: .top, spacing: 16) {
@@ -20,7 +20,7 @@ struct RowView: View {
 }
 
 struct ItemView_Previews: PreviewProvider {
-  static let pokemon = Pokemon(
+  static let pokemon = PokemonListModel.Pokemon(
     id: 3,
     name: "charmander",
     image: "")

@@ -1,16 +1,18 @@
 import SwiftUI
 
+fileprivate typealias Pokemon = PokemonListModel.Pokemon
+
 @MainActor
-final class PokemonDetailsModel: ObservableObject {
+final class PokemonDetailsViewModel: ObservableObject {
   @Published var isFavourite = false
 
   @Published var pokemonDetails: PokemonDetails? = nil
 
-  let pokemon: Pokemon
+  let pokemon: PokemonListModel.Pokemon
 
   let dependencies: Dependencies
 
-  init(dependencies: Dependencies = .liveValues, pokemon: Pokemon) {
+  init(dependencies: Dependencies = .liveValues, pokemon: PokemonListModel.Pokemon) {
     self.dependencies = dependencies
     self.pokemon = pokemon
   }
@@ -80,8 +82,8 @@ extension URL {
   fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
 }
 
-struct DetailsView: View {
-  @ObservedObject var model: PokemonDetailsModel
+struct PokemonDescriptionView: View {
+  @ObservedObject var model: PokemonDetailsViewModel
 
   var body: some View {
     VStack {
@@ -160,7 +162,7 @@ struct DetailsView: View {
 }
 
 struct PokemonDetailsView_Previews: PreviewProvider {
-  static let pokemon = Pokemon(
+  fileprivate static let pokemon = Pokemon(
     id: .init(rawValue: 1),
     name: "bulbasaur",
     image: "")
@@ -176,7 +178,7 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   
   static var previews: some View {
     NavigationStack {
-      DetailsView(model: PokemonDetailsModel(
+      PokemonDescriptionView(model: PokemonDetailsViewModel(
         dependencies: .previewValues,
         pokemon: pokemon
       ))

@@ -1,8 +1,8 @@
 import SwiftUI
 
 @MainActor
-final class PokemonListModel: ObservableObject {
-  @Published var pokemonList: [Pokemon] = []
+final class PokemonListViewModel: ObservableObject {
+  @Published var pokemonList: [PokemonListModel.Pokemon] = []
 
   @Published var showFavourites = false {
     didSet {
@@ -16,8 +16,8 @@ final class PokemonListModel: ObservableObject {
     }
   }
 
-  private var favouritesList: [Pokemon] = []
-  private var allPokemonList: [Pokemon] = []
+  private var favouritesList: [PokemonListModel.Pokemon] = []
+  private var allPokemonList: [PokemonListModel.Pokemon] = []
 
   let dependencies: Dependencies
 
@@ -31,10 +31,10 @@ final class PokemonListModel: ObservableObject {
 
   func onAppear(
   ) {
-    var favouritePokemonsSet: Set<Pokemon> = Set<Pokemon>()
+    var favouritePokemonsSet: Set<PokemonListModel.Pokemon> = Set<PokemonListModel.Pokemon>()
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
-        Set<Pokemon>.self,
+        Set<PokemonListModel.Pokemon>.self,
         from: dependencies.dataManager.load(URL.pokemonFileSystem)
       )
     } catch {
@@ -58,7 +58,7 @@ final class PokemonListModel: ObservableObject {
           }
 
           allPokemonList = try JSONDecoder()
-            .decode(Pokemon.PagedResponse.self, from: data)
+            .decode(PokemonListModel.self, from: data)
             .results
           pokemonList = allPokemonList
         } catch {
@@ -79,13 +79,13 @@ extension URL {
 }
 
 struct ListView: View {
-  @ObservedObject var model: PokemonListModel
+  @ObservedObject var model: PokemonListViewModel
 
   var body: some View {
     NavigationStack {
       List($model.pokemonList) { $pokemon in
         NavigationLink {
-          DetailsView(model: PokemonDetailsModel(
+          PokemonDescriptionView(model: PokemonDetailsViewModel(
             dependencies: model.dependencies,
             pokemon: pokemon
           ))
@@ -112,7 +112,7 @@ struct ListView: View {
 
 struct PokemonListView_Previews: PreviewProvider {
   static var previews: some View {
-    ListView(model: PokemonListModel(
+    ListView(model: PokemonListViewModel(
       dependencies: Dependencies.previewValues)
     )
   }

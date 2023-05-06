@@ -69,3 +69,20 @@ struct PokemonDetails: Codable, Equatable {
     }
   }
 }
+
+extension PokemonDetails {
+  static let mock = Self.init(
+    height: 3,
+    weight: 32,
+    moves: [
+      "poison-sting",
+      "string-shot",
+      "bug-bite",
+      "electroweb"
+    ],
+    types: [
+      "bug",
+      "poison"
+    ]
+  )
+}
