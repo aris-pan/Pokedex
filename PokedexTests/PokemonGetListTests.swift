@@ -1,5 +1,5 @@
 import XCTest
-@testable import DomainLogic
+@testable import Pokedex
 
 final class PokemonGetListTests: XCTestCase {
   func testGetListReturnsFailureWhenAPIFails() async throws {

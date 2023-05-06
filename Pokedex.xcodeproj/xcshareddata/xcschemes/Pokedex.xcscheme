@@ -29,7 +29,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TestPlan.xctestplan"
+            reference = "container:Pokedex.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -39,9 +39,9 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0B60A5C229FBD7E80042D1AB"
-               BuildableName = "DomainLogicTests.xctest"
-               BlueprintName = "DomainLogicTests"
+               BlueprintIdentifier = "0BA8FA0F2A0659D6002FBCF6"
+               BuildableName = "PokedexTests.xctest"
+               BlueprintName = "PokedexTests"
                ReferencedContainer = "container:Pokedex.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -49,9 +49,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0B60A5C229FBD7E80042D1AB"
-               BuildableName = "DomainLogicTests.xctest"
-               BlueprintName = "DomainLogicTests"
+               BlueprintIdentifier = "0BA8FA0F2A0659D6002FBCF6"
+               BuildableName = "PokedexTests.xctest"
+               BlueprintName = "PokedexTests"
                ReferencedContainer = "container:Pokedex.xcodeproj">
             </BuildableReference>
          </TestableReference>

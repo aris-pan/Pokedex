@@ -1,13 +1,13 @@
 import Foundation
 
-public extension API.Pokemon {
+extension API.Pokemon {
   struct PagedResponse: Codable {
     let count: Int?
     let next: URL?
     let previous: URL?
     let results: [Pokemon]
     
-    public init(results: [Pokemon]) {
+    init(results: [Pokemon]) {
       self.count = nil
       self.next = nil
       self.previous = nil

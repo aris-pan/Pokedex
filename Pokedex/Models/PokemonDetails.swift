@@ -1,19 +1,19 @@
 import Foundation
 
-public struct PokemonDetails: Codable, Equatable {
-  public let height: Int
-  public let weight: Int
-  public let moves: [String]
-  public let types: [String]
+struct PokemonDetails: Codable, Equatable {
+  let height: Int
+  let weight: Int
+  let moves: [String]
+  let types: [String]
   
-  public enum CodingKeys: CodingKey {
+  enum CodingKeys: CodingKey {
     case height
     case weight
     case moves
     case types
   }
   
-  public init(
+  init(
     height: Int,
     weight: Int,
     moves: [String],
@@ -26,7 +26,7 @@ public struct PokemonDetails: Codable, Equatable {
   }
   
   // MARK: Codable
-  public init(from decoder: Decoder) throws {
+  init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: PokemonDetails.CodingKeys.self)
     
     height = try container.decode(Int.self, forKey: .height)
@@ -39,7 +39,7 @@ public struct PokemonDetails: Codable, Equatable {
     self.types = types.map { $0.type.name }
   }
   
-  public func encode(to encoder: Encoder) throws {
+  func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: PokemonDetails.CodingKeys.self)
 
     try container.encode(self.height, forKey: PokemonDetails.CodingKeys.height)
@@ -53,18 +53,18 @@ public struct PokemonDetails: Codable, Equatable {
   }
   
   // MARK: Structs to Map to and from Backend Models
-  public struct Moves: Codable {
+  struct Moves: Codable {
     let move: Move
     
-    public struct Move: Codable {
+    struct Move: Codable {
       let name: String
     }
   }
   
-  public struct Types: Codable {
+  struct Types: Codable {
     let type: Species
     
-    public struct Species: Codable {
+    struct Species: Codable {
       let name: String
     }
   }

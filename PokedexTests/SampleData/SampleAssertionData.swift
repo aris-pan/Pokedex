@@ -1,5 +1,5 @@
 import Foundation
-@testable import DomainLogic
+@testable import Pokedex
 
 struct SampleAssertionData {
   static let pokemonDetails: PokemonDetails = PokemonDetails(

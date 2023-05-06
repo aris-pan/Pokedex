@@ -1,5 +1,4 @@
 import SwiftUI
-import DomainLogic
 
 struct RowView: View {
   let pokemon: Pokemon

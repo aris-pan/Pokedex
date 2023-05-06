@@ -1,13 +1,20 @@
 import Foundation
 
-public extension API {
+struct API {
+  typealias URLSessionDataAdapter = (URLRequest) async throws -> (Data, URLResponse)
+
+  enum Errors: Error {
+    case invalidUrl
+    case unexpectedResponse
+  }
+
   struct Pokemon {
     static let endpoint = "https://pokeapi.co/api/v2/pokemon"
     
     // MARK: Inject the closure to use to retrieve the data for URLRequest
     let urlSessionDataAdapter: API.URLSessionDataAdapter
     
-    public static func preview<T>(objects: T) -> Self where T: Encodable {
+    static func preview<T>(objects: T) -> Self where T: Encodable {
       guard let data = try? JSONEncoder().encode(objects),
             let response = HTTPURLResponse(
         url: URL(string: "https://www.google.com/")!,

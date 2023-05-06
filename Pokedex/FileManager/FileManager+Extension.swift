@@ -1,6 +1,6 @@
 import Foundation
 
-public extension FileManager {
+extension FileManager {
   enum FileManagerError: Error {
     case fileNotExisting
     case dataNotFound
