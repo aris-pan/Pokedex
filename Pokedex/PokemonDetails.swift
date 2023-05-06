@@ -6,7 +6,7 @@ fileprivate typealias Pokemon = PokemonListModel.Pokemon
 final class PokemonDetailsViewModel: ObservableObject {
   @Published var isFavourite = false
 
-  @Published var pokemonDetails: PokemonDetails? = nil
+  @Published var pokemonDetails: PokemonDetailsModel? = nil
 
   let pokemon: PokemonListModel.Pokemon
 
@@ -33,7 +33,7 @@ final class PokemonDetailsViewModel: ObservableObject {
           throw APIError.unexpectedResponse
         }
 
-        pokemonDetails = try JSONDecoder().decode(PokemonDetails.self, from: data)
+        pokemonDetails = try JSONDecoder().decode(PokemonDetailsModel.self, from: data)
       } catch {
         print("\(error)")
       }
@@ -165,20 +165,17 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   fileprivate static let pokemon = Pokemon(
     id: .init(rawValue: 1),
     name: "bulbasaur",
-    image: "")
-  static let pokemonDetails = PokemonDetails(
-    height: 54, weight: 455,
-    moves: [
-      "bite-whip", "fireball-edge", "fly", "cut",
-      "bite-slam", "fireball-drain", "fly-seed", "cut-whip",
-      "bite2", "fireball2", "fly2", "cut2", "bite3",
-      "fireball3", "fly3","cut3"
-    ],
-    types: ["grass", "poison"])
-  
+    image: ""
+  )
+
   static var previews: some View {
     NavigationStack {
-      PokemonDescriptionView(model: PokemonDetailsViewModel(pokemon: pokemon))
+      PokemonDescriptionView(model: PokemonDetailsViewModel(
+        dependencies: Dependencies(
+          dataManager: .mock(initialData: try? JSONEncoder().encode(PokemonListModel.mock.results)),
+          apiClient: .mock(initialData: try? JSONEncoder().encode(PokemonDetailsModel.mock))
+        ),
+        pokemon: pokemon))
     }
   }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct PokemonDetails: Codable, Equatable {
+struct PokemonDetailsModel: Codable, Equatable {
   let height: Int
   let weight: Int
   let moves: [String]
@@ -27,7 +27,7 @@ struct PokemonDetails: Codable, Equatable {
   
   // MARK: Codable
   init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: PokemonDetails.CodingKeys.self)
+    let container = try decoder.container(keyedBy: CodingKeys.self)
     
     height = try container.decode(Int.self, forKey: .height)
     weight = try container.decode(Int.self, forKey: .weight)
@@ -40,16 +40,16 @@ struct PokemonDetails: Codable, Equatable {
   }
   
   func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: PokemonDetails.CodingKeys.self)
+    var container = encoder.container(keyedBy: CodingKeys.self)
 
-    try container.encode(self.height, forKey: PokemonDetails.CodingKeys.height)
-    try container.encode(self.weight, forKey: PokemonDetails.CodingKeys.weight)
+    try container.encode(self.height, forKey: CodingKeys.height)
+    try container.encode(self.weight, forKey: CodingKeys.weight)
     
     let movesArray = moves.map { Moves(move: Moves.Move(name: $0)) }
     let typesArray = types.map { Types(type: Types.Species(name: $0)) }
     
-    try container.encode(movesArray, forKey: PokemonDetails.CodingKeys.moves)
-    try container.encode(typesArray, forKey: PokemonDetails.CodingKeys.types)
+    try container.encode(movesArray, forKey: CodingKeys.moves)
+    try container.encode(typesArray, forKey: CodingKeys.types)
   }
   
   // MARK: Structs to Map to and from Backend Models
@@ -70,7 +70,7 @@ struct PokemonDetails: Codable, Equatable {
   }
 }
 
-extension PokemonDetails {
+extension PokemonDetailsModel {
   static let mock = Self.init(
     height: 3,
     weight: 32,
@@ -81,7 +81,7 @@ extension PokemonDetails {
       "electroweb"
     ],
     types: [
-      "bug",
+      "fire",
       "poison"
     ]
   )
