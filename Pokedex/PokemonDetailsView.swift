@@ -114,15 +114,21 @@ struct DetailsView: View {
       .shadow(radius: 10)
       HStack {
         if let pokemonDetails = model.pokemonDetails {
-          CaptuleListView(title: "moves_key", items: pokemonDetails.moves) { move in
-            Text(move.replacingOccurrences(of: "-", with: " "))
+          VStack {
+            Text("moves_key")
+            List(pokemonDetails.moves, id: \.self) { move in
+              Text(move.replacingOccurrences(of: "-", with: " "))
+            }
           }
-          CaptuleListView(title: "types_key", items: pokemonDetails.types) { type in
-            Label(type, systemImage: TypeDictionaries.symbolFor(type))
+          VStack {
+            Text("types_key")
+            List(pokemonDetails.types, id: \.self) { type in
+              Label(type, systemImage: TypeDictionaries.symbolFor(type))
+                .listItemTint(TypeDictionaries.colorFor(type))
+            }
           }
         }
       }
-      .listStyle(.plain)
       Spacer()
     }
     .navigationBarTitleDisplayMode(.inline)
