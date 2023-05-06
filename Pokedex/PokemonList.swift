@@ -32,8 +32,7 @@ final class PokemonListViewModel: ObservableObject {
     pokemonList = (showFavourites ? favouritesList : allPokemonList)
   }
 
-  func onAppear(
-  ) {
+  func onAppear() {
     var favouritePokemonsSet: Set<PokemonListModel.Pokemon> = Set<PokemonListModel.Pokemon>()
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
@@ -81,15 +80,17 @@ fileprivate enum APIError: Error {
 extension URL {
   fileprivate static let fileSystem = Self.documentsDirectory.appending(component: "pokemons.json")
   fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
-
   fileprivate static func imageURL(id: PokemonListModel.Pokemon.ID) -> URL? {
-    URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id.rawValue).png"
+    URL(string:
+"""
+https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/\
+pokemon/other/official-artwork/\(id.rawValue).png
+"""
   )}
 }
 
 struct ListView: View {
   @ObservedObject var model: PokemonListViewModel
-
 
   var body: some View {
     NavigationStack {
