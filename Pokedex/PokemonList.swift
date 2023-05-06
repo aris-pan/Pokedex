@@ -86,7 +86,7 @@ extension URL {
 https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/\
 pokemon/other/official-artwork/\(id.rawValue).png
 """
-  )}
+    )}
 }
 
 struct ListView: View {
@@ -101,7 +101,18 @@ struct ListView: View {
             pokemon: pokemon
           ))
         } label: {
-          RowView(pokemon: $pokemon.wrappedValue, imageUrl: URL.imageURL(id: $pokemon.id))
+          HStack(alignment: .top, spacing: 16) {
+            CacheAsyncImageWrapper(url: URL.imageURL(id: $pokemon.id))
+              .frame(width: 60, height: 60)
+            VStack(alignment: .leading) {
+              Text("#\($pokemon.wrappedValue.id.rawValue)")
+                .fontWeight(.light)
+                .italic()
+              Text(pokemon.name.capitalized)
+                .fontWeight(.heavy)
+            }
+          }
+          .padding()
         }
       }
       .navigationTitle("app_title_key")

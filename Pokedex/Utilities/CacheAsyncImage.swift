@@ -15,7 +15,8 @@ struct CacheAsyncImageWrapper: View {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle(tint: .red))
         default:
-          ImageErrorView()
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle(tint: .red))
         }
       }
   }
