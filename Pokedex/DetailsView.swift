@@ -13,7 +13,8 @@ final class DetailsViewModel: ObservableObject {
     self.pokemonAPI = pokemonAPI
     self.pokemon = pokemon
 
-    checkIsFavourite()
+    isFavourite = getFavourites()
+      .contains(where: { $0.id == pokemon.id })
 
     Task {
       do {
@@ -25,37 +26,27 @@ final class DetailsViewModel: ObservableObject {
   }
 
   func onAddOrRemoveFavourite() {
-    var favouritePokemons: Set<Pokemon> = Set<Pokemon>()
-    do {
-      favouritePokemons = try JSONDecoder().decode(
-        Set<Pokemon>.self,
-        from: Current.dataManager.load(URL.pokemons)
-      )
-    } catch {
-
-    }
+    var favouritePokemonsSet = getFavourites()
 
     guard let pokemon = pokemon else {
       return
     }
 
     if isFavourite {
-      favouritePokemons.remove(pokemon)
+      favouritePokemonsSet.remove(pokemon)
     } else {
-      favouritePokemons.insert(pokemon)
+      favouritePokemonsSet.insert(pokemon)
     }
 
     do {
       try Current.dataManager.save(
-        JSONEncoder().encode(favouritePokemons),
+        JSONEncoder().encode(favouritePokemonsSet),
         URL.pokemons
       )
     } catch { }
-
-    checkIsFavourite()
   }
 
-  private func checkIsFavourite() {
+  private func getFavourites() -> Set<Pokemon> {
     var favouritePokemonsSet: Set<Pokemon> = Set<Pokemon>()
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
@@ -65,13 +56,7 @@ final class DetailsViewModel: ObservableObject {
     } catch {
 
     }
-
-    guard let pokemon = pokemon else {
-      return
-    }
-
-    isFavourite = favouritePokemonsSet
-      .contains(where: { $0.id == pokemon.id })
+    return favouritePokemonsSet
   }
 }
 
