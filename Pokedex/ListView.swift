@@ -2,24 +2,19 @@ import SwiftUI
 
 @MainActor
 final class ListViewModel: ObservableObject {
-  @Published
-  var pokemonList: [Pokemon] = []
+  @Published var pokemonList: [Pokemon] = []
 
-  @Published
-  var showFavourites = false {
+  @Published var showFavourites = false {
     didSet {
       didSetFavourite()
     }
   }
 
-  @Published
-  var searchText = "" {
+  @Published var searchText = "" {
     didSet {
       pokemonList = pokemonList.filter { $0.name.hasPrefix(searchText.lowercased()) }
     }
   }
-
-  private var pokemonAPI: API.Pokemon?
 
   private var favouritesList: [Pokemon] = []
   private var allPokemonList: [Pokemon] = []
@@ -29,30 +24,36 @@ final class ListViewModel: ObservableObject {
   }
 
   func onAppear(
-    pokemonAPI: API.Pokemon
   ) {
-    self.pokemonAPI = pokemonAPI
-
     var favouritePokemonsSet: Set<Pokemon> = Set<Pokemon>()
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
         Set<Pokemon>.self,
-        from: Current.dataManager.load(URL.pokemons)
+        from: Current.dataManager.load(URL.pokemonFileSystem)
       )
     } catch {
-
+      print("\(error)")
     }
 
     favouritesList = Array(favouritePokemonsSet)
-
     didSetFavourite()
 
     // Run Get List only on first Appearance
     if allPokemonList.isEmpty {
       Task {
         do {
-          allPokemonList = try await pokemonAPI.getList()
-          // Initialize list with all pokemon from api.
+          let (data, urlResponse) = try await Current.apiClient.load(
+            URLRequest(url: URL.pokemonNetwork)
+          )
+
+          guard let httpResponse = urlResponse as? HTTPURLResponse,
+                httpResponse.statusCode == 200 else {
+            throw APIError.unexpectedResponse
+          }
+
+          allPokemonList = try JSONDecoder()
+            .decode(Pokemon.PagedResponse.self, from: data)
+            .results
           pokemonList = allPokemonList
         } catch {
           print("\(error)")
@@ -62,13 +63,16 @@ final class ListViewModel: ObservableObject {
   }
 }
 
+fileprivate enum APIError: Error {
+  case unexpectedResponse
+}
+
 extension URL {
-  fileprivate static let pokemons = Self.documentsDirectory.appending(component: "pokemons.json")
+  fileprivate static let pokemonFileSystem = Self.documentsDirectory.appending(component: "pokemons.json")
+  fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
 }
 
 struct ListView: View {
-  @Environment(\.pokemonAPI) var pokemonAPI: API.Pokemon
-
   @StateObject var viewModel = ListViewModel()
 
   var body: some View {
@@ -90,38 +94,13 @@ struct ListView: View {
           Toggle("favourites_key", isOn: $viewModel.showFavourites)
         }
       }
-      .onAppear {
-        viewModel.onAppear(
-          pokemonAPI: pokemonAPI
-        )
-      }
     }
+    .onAppear(perform: viewModel.onAppear)
   }
 }
 
 struct PokemonListView_Previews: PreviewProvider {
-  static var previewObjects = API.Pokemon.PagedResponse(results: [
-    Pokemon(
-      id: 11,
-      name: "Hello",
-      image: ""
-    ),
-    Pokemon(
-      id: 42,
-      name: "Hello2",
-      image: ""
-    ),
-    Pokemon(
-      id: 43,
-      name: "Hello1",
-      image: ""
-    )
-  ])
-  
   static var previews: some View {
     ListView()
-    // TODO: we need to somehow pass both api calls here,
-    // not only the get List.
-      .environment(\.pokemonAPI, .preview(objects: previewObjects))
   }
 }

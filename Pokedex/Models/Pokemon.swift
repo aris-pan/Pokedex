@@ -1,7 +1,10 @@
 import Foundation
 
+fileprivate enum APIError: Error {
+  case unexpectedResponse
+}
+
 struct Pokemon: Codable, Hashable, Identifiable {
-  
   typealias Id = Tagged<Pokemon, Int>
   
   var id: Id
@@ -26,7 +29,7 @@ struct Pokemon: Codable, Hashable, Identifiable {
     
     guard let pokemonID = url?.components(separatedBy: "/")[safe: 6],
           let intID = Int(pokemonID) else {
-      throw API.Errors.unexpectedResponse
+      throw APIError.unexpectedResponse
     }
     
     self.id = Id(rawValue: intID)
@@ -37,5 +40,19 @@ struct Pokemon: Codable, Hashable, Identifiable {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(name, forKey: .name)
     try container.encode("https://pokeapi.co/api/v2/pokemon/\(id.rawValue)", forKey: .url)
+  }
+
+  struct PagedResponse: Codable {
+    let count: Int?
+    let next: URL?
+    let previous: URL?
+    let results: [Pokemon]
+
+    init(results: [Pokemon]) {
+      self.count = nil
+      self.next = nil
+      self.previous = nil
+      self.results = results
+    }
   }
 }

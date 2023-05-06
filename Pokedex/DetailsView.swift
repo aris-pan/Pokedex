@@ -2,17 +2,13 @@ import SwiftUI
 
 @MainActor
 final class DetailsViewModel: ObservableObject {
-  @Published
-  var isFavourite = false
+  @Published var isFavourite = false
 
-  @Published
-  var pokemonDetails: PokemonDetails? = nil
+  @Published var pokemonDetails: PokemonDetails? = nil
 
-  private var pokemonAPI: API.Pokemon?
   private var pokemon: Pokemon? = nil
 
-  func onAppear(pokemonAPI: API.Pokemon, pokemon: Pokemon) {
-    self.pokemonAPI = pokemonAPI
+  func onAppear(pokemon: Pokemon) {
     self.pokemon = pokemon
 
     isFavourite = getFavourites()
@@ -20,7 +16,16 @@ final class DetailsViewModel: ObservableObject {
 
     Task {
       do {
-        pokemonDetails = try await pokemonAPI.getDetails(id: pokemon.id)
+        let (data, urlResponse) = try await Current.apiClient.load(
+          URLRequest(url: URL.pokemonNetwork.appending(path: "/\(pokemon.id.rawValue)"))
+        )
+
+        guard let httpResponse = urlResponse as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+          throw APIError.unexpectedResponse
+        }
+
+        pokemonDetails = try JSONDecoder().decode(PokemonDetails.self, from: data)
       } catch {
         print("\(error)")
       }
@@ -64,12 +69,16 @@ final class DetailsViewModel: ObservableObject {
   }
 }
 
+fileprivate enum APIError: Error {
+  case unexpectedResponse
+}
+
 extension URL {
   fileprivate static let pokemons = Self.documentsDirectory.appending(component: "pokemons.json")
+  fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
 }
 
 struct DetailsView: View {
-  @Environment(\.pokemonAPI) var pokemonAPI: API.Pokemon
   let pokemon: Pokemon
   
   @StateObject var viewModel = DetailsViewModel()
@@ -132,7 +141,6 @@ struct DetailsView: View {
     }
     .onAppear {
       viewModel.onAppear(
-        pokemonAPI: pokemonAPI,
         pokemon: pokemon
       )
     }
@@ -165,7 +173,6 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   static var previews: some View {
     NavigationStack {
       DetailsView(pokemon: pokemon)
-        .environment(\.pokemonAPI, .preview(objects: pokemonDetails))
     }
   }
 }
