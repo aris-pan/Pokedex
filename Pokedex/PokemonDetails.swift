@@ -8,6 +8,9 @@ final class PokemonDetailsViewModel: ObservableObject {
 
   @Published var pokemonDetails: PokemonDetailsModel? = nil
 
+  @Published var showAlert: Bool = false
+  @Published var errorText = ""
+
   let pokemon: PokemonListModel.Pokemon
 
   let dependencies: Dependencies
@@ -35,7 +38,8 @@ final class PokemonDetailsViewModel: ObservableObject {
 
         pokemonDetails = try JSONDecoder().decode(PokemonDetailsModel.self, from: data)
       } catch {
-        print("\(error)")
+        showAlert = true
+        errorText = error.localizedDescription
       }
     }
   }
@@ -56,7 +60,10 @@ final class PokemonDetailsViewModel: ObservableObject {
       )
 
       isFavourite.toggle()
-    } catch { }
+    } catch {
+      showAlert = true
+      errorText = error.localizedDescription
+    }
   }
 
   private func getFavourites() -> Set<Pokemon> {
@@ -82,7 +89,7 @@ extension URL {
   fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
 }
 
-struct PokemonDescriptionView: View {
+struct PokemonDetailsView: View {
   @ObservedObject var model: PokemonDetailsViewModel
 
   var body: some View {
@@ -147,6 +154,9 @@ struct PokemonDescriptionView: View {
         }
       }
     }
+    .alert(isPresented: $model.showAlert) {
+      .init(title: Text(model.errorText))
+    }
     .onAppear {
       model.onAppear()
     }
@@ -170,7 +180,7 @@ struct PokemonDetailsView_Previews: PreviewProvider {
 
   static var previews: some View {
     NavigationStack {
-      PokemonDescriptionView(model: PokemonDetailsViewModel(
+      PokemonDetailsView(model: PokemonDetailsViewModel(
         dependencies: Dependencies(
           dataManager: .mock(initialData: try? JSONEncoder().encode(PokemonListModel.mock.results)),
           apiClient: .mock(initialData: try? JSONEncoder().encode(PokemonDetailsModel.mock))

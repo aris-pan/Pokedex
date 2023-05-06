@@ -91,7 +91,7 @@ struct ListView: View {
     NavigationStack {
       List($model.pokemonList) { $pokemon in
         NavigationLink {
-          PokemonDescriptionView(model: PokemonDetailsViewModel(
+          PokemonDetailsView(model: PokemonDetailsViewModel(
             dependencies: model.dependencies,
             pokemon: pokemon
           ))
