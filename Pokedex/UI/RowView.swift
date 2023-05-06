@@ -27,6 +27,6 @@ struct ItemView_Previews: PreviewProvider {
   
   static var previews: some View {
     RowView(pokemon: pokemon)
-      .previewThatFits()
+      .previewLayout(.sizeThatFits)
   }
 }

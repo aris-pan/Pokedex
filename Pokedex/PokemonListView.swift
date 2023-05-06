@@ -103,8 +103,10 @@ struct ListView: View {
           Toggle("favourites_key", isOn: $model.showFavourites)
         }
       }
+      .onAppear {
+        model.onAppear()
+      }
     }
-    .onAppear(perform: model.onAppear)
   }
 }
 

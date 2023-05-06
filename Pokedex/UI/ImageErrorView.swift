@@ -22,6 +22,6 @@ struct ImageErrorView_Previews: PreviewProvider {
       ImageErrorView()
         .frame(width: 100, height: 100)
     }
-    .previewThatFits()
+    .previewLayout(.sizeThatFits)
   }
 }

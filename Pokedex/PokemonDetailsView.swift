@@ -115,7 +115,7 @@ struct DetailsView: View {
       HStack {
         if let pokemonDetails = model.pokemonDetails {
           CaptuleListView(title: "moves_key", items: pokemonDetails.moves) { move in
-            Text(FormatString.removeDash(move))
+            Text(move.replacingOccurrences(of: "-", with: " "))
           }
           CaptuleListView(title: "types_key", items: pokemonDetails.types) { type in
             Label(type, systemImage: TypeDictionaries.symbolFor(type))
