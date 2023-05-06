@@ -38,7 +38,7 @@ final class PokemonListViewModel: ObservableObject {
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
         Set<PokemonListModel.Pokemon>.self,
-        from: dependencies.dataManager.load(URL.pokemonFileSystem)
+        from: dependencies.dataManager.load(URL.fileSystem)
       )
     } catch {
       showAlert = true
@@ -79,8 +79,12 @@ fileprivate enum APIError: Error {
 }
 
 extension URL {
-  fileprivate static let pokemonFileSystem = Self.documentsDirectory.appending(component: "pokemons.json")
+  fileprivate static let fileSystem = Self.documentsDirectory.appending(component: "pokemons.json")
   fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
+
+  fileprivate static func imageURL(id: PokemonListModel.Pokemon.ID) -> URL? {
+    URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id.rawValue).png"
+  )}
 }
 
 struct ListView: View {
@@ -96,7 +100,7 @@ struct ListView: View {
             pokemon: pokemon
           ))
         } label: {
-          RowView(pokemon: $pokemon.wrappedValue)
+          RowView(pokemon: $pokemon.wrappedValue, imageUrl: URL.imageURL(id: $pokemon.id))
         }
       }
       .navigationTitle("app_title_key")

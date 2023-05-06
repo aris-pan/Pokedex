@@ -15,9 +15,12 @@ final class PokemonDetailsViewModel: ObservableObject {
 
   let dependencies: Dependencies
 
+  let imageURL: URL?
+
   init(dependencies: Dependencies = .liveValues, pokemon: PokemonListModel.Pokemon) {
     self.dependencies = dependencies
     self.pokemon = pokemon
+    imageURL = .imageURL(id: pokemon.id)
   }
 
   func onAppear() {
@@ -28,7 +31,7 @@ final class PokemonDetailsViewModel: ObservableObject {
     Task {
       do {
         let (data, urlResponse) = try await dependencies.apiClient.load(
-          URLRequest(url: URL.pokemonNetwork.appending(path: "/\(pokemon.id.rawValue)"))
+          URLRequest(url: URL(string: pokemon.url)!)
         )
 
         guard let httpResponse = urlResponse as? HTTPURLResponse,
@@ -56,7 +59,7 @@ final class PokemonDetailsViewModel: ObservableObject {
     do {
       try dependencies.dataManager.save(
         JSONEncoder().encode(favouritePokemonsSet),
-        URL.pokemons
+        URL.fileSystem
       )
 
       isFavourite.toggle()
@@ -71,7 +74,7 @@ final class PokemonDetailsViewModel: ObservableObject {
     do {
       favouritePokemonsSet = try JSONDecoder().decode(
         Set<Pokemon>.self,
-        from: dependencies.dataManager.load(URL.pokemons)
+        from: dependencies.dataManager.load(URL.fileSystem)
       )
     } catch {
 
@@ -85,8 +88,10 @@ fileprivate enum APIError: Error {
 }
 
 extension URL {
-  fileprivate static let pokemons = Self.documentsDirectory.appending(component: "pokemons.json")
-  fileprivate static let pokemonNetwork = URL(string: "https://pokeapi.co/api/v2/pokemon")!
+  fileprivate static let fileSystem = Self.documentsDirectory.appending(component: "pokemons.json")
+  fileprivate static func imageURL(id: PokemonListModel.Pokemon.ID) -> URL? {
+    URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id.rawValue).png"
+  )}
 }
 
 struct PokemonDetailsView: View {
@@ -95,7 +100,7 @@ struct PokemonDetailsView: View {
   var body: some View {
     VStack {
       HStack {
-        CacheAsyncImageWrapper(url: model.pokemon.image)
+        CacheAsyncImageWrapper(url: model.imageURL)
           .frame(maxWidth: .infinity, maxHeight: 100)
           .padding()
         
@@ -175,7 +180,7 @@ struct PokemonDetailsView_Previews: PreviewProvider {
   fileprivate static let pokemon = Pokemon(
     id: .init(rawValue: 1),
     name: "bulbasaur",
-    image: ""
+    url: ""
   )
 
   static var previews: some View {
