@@ -24,7 +24,6 @@ final class PokemonDetailsViewModel: ObservableObject {
   }
 
   func onAppear() {
-
     isFavourite = getFavourites()
       .contains(where: { $0.id == pokemon.id })
 
@@ -77,7 +76,8 @@ final class PokemonDetailsViewModel: ObservableObject {
         from: dependencies.dataManager.load(URL.fileSystem)
       )
     } catch {
-
+      showAlert = true
+      errorText = error.localizedDescription
     }
     return favouritePokemonsSet
   }
